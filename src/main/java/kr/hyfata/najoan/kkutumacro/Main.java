@@ -8,12 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Main {
     public final static Logger LOG = LoggerFactory.getLogger(Main.class);
     private static Driver driver;
-    private static ArrayList<String> words;
+    private static HashSet<String> words;
 
     public static void main(String[] args) throws IOException {
         IntelliJTheme.setup(Main.class.getClassLoader().getResourceAsStream("theme/arc_theme_dark.theme.json"));
@@ -32,7 +32,7 @@ public class Main {
         return driver.getDriver();
     }
 
-    public static ArrayList<String> getWords() {
+    public static HashSet<String> getWords() {
         return words;
     }
 }

@@ -127,7 +127,7 @@ public class Design extends JFrame {
         panel.add(new JLabel("Delay(ms): "));
         delay = SwingUtil.getIntTextField();
         delay.setPreferredSize(new Dimension(80, 23));
-        delay.setValue(10);
+        delay.setValue(1);
         panel.add(delay);
 
         panels.add(panel);

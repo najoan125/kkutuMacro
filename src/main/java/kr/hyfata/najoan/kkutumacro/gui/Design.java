@@ -3,17 +3,13 @@ package kr.hyfata.najoan.kkutumacro.gui;
 import kr.hyfata.najoan.kkutumacro.Main;
 import kr.hyfata.najoan.kkutumacro.handler.Handler;
 import kr.hyfata.najoan.kkutumacro.handler.dto.Count;
+import kr.hyfata.najoan.kkutumacro.utils.SwingUtil;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.PrintStream;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -57,8 +53,8 @@ public class Design extends JFrame {
     private void design() {
         log();
         urlInput();
-        browserSelector();
-        start();
+        browserAndDelay();
+        startButton();
         debug();
         add(getPanel());
     }
@@ -117,7 +113,7 @@ public class Design extends JFrame {
         panels.add(panel);
     }
 
-    private void browserSelector() {
+    private void browserAndDelay() {
         JPanel panel = new JPanel();
         String[] menu = new String[]{"Chrome", "Firefox"};
         browsers = new JComboBox<>(menu);
@@ -128,7 +124,7 @@ public class Design extends JFrame {
 
         panel.add(new JLabel("  "));
         panel.add(new JLabel("Delay(ms): "));
-        delay = getIntTextField();
+        delay = SwingUtil.getIntTextField();
         delay.setPreferredSize(new Dimension(80, 23));
         delay.setValue(1);
         panel.add(delay);
@@ -136,98 +132,60 @@ public class Design extends JFrame {
         panels.add(panel);
     }
 
-    private JFormattedTextField getIntTextField() {
-        NumberFormatter formatter = getNumberFormatter();
-        JFormattedTextField textField = new JFormattedTextField(formatter);
-
-        textField.addCaretListener(e -> {
-            int caretPosition = textField.getCaretPosition();
-            int textLength = textField.getText().length();
-
-            if (caretPosition < textLength && textField.getText().equals("0")) {
-                textField.setCaretPosition(textLength);
-            }
-        });
-
-        textField.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                SwingUtilities.invokeLater(() -> {
-                    JTextField tf = (JTextField)e.getSource();
-                    int offset = tf.viewToModel2D(e.getPoint());
-                    tf.setCaretPosition(offset);
-                });
-            }
-        });
-
-        return textField;
-    }
-
-    private static NumberFormatter getNumberFormatter() {
-        NumberFormat format = NumberFormat.getInstance();
-        NumberFormatter formatter = new NumberFormatter(format) {
-            @Override
-            public Object stringToValue(String text) throws ParseException {
-                if (text != null && text.isEmpty()) {
-                    return 0L;
-                }
-                return super.stringToValue(text);
-            }
-        };
-
-        formatter.setValueClass(Long.class);
-        formatter.setMinimum(0L);
-        formatter.setMaximum(Long.MAX_VALUE);
-        formatter.setAllowsInvalid(false);
-        formatter.setCommitsOnValidEdit(true);
-        return formatter;
-    }
-
-    private void start() {
+    private void startButton() {
         JPanel panel = new JPanel();
         JButton start = new JButton("Start");
         start.addActionListener(e -> {
-            int ms = Integer.parseInt(delay.getValue().toString());
+            if (delay.getValue().toString().equals("0")) {
+                return;
+            }
             if (!started) {
                 started = true;
-                text.setText("");
-                start.setText("Starting");
-                start.setEnabled(false);
-                browsers.setEnabled(false);
-                urlField.setEnabled(false);
-                delay.setEnabled(false);
-                if (browsers.getSelectedIndex() == 0) {
-                    Runnable task = () -> {
-                        Main.setDriver("chrome", urlField.getText());
-                        start.setText("Stop");
-                        start.setEnabled(true);
-                        Handler.start(ms);
-                    };
-                    new Thread(task).start();
-                } else {
-                    Runnable task = () -> {
-                        Main.setDriver("gecko", urlField.getText());
-                        start.setText("Stop");
-                        start.setEnabled(true);
-                        Handler.start(ms);
-                    };
-                    new Thread(task).start();
-                }
+                start(start);
             } else {
-                start.setText("Start");
-                started = false;
-                browsers.setEnabled(true);
-                urlField.setEnabled(true);
-                delay.setEnabled(true);
-                round.setText("<none>");
-                count.setText("<none>");
-                Count.resetCount();
-                Handler.stop();
-                Main.getDriver().quit();
+                stop(start);
             }
         });
         panel.add(start);
         panels.add(panel);
+    }
+
+    private void start(JButton start) {
+        int ms = Integer.parseInt(delay.getValue().toString());
+        text.setText("");
+        start.setText("Starting");
+        start.setEnabled(false);
+        browsers.setEnabled(false);
+        urlField.setEnabled(false);
+        delay.setEnabled(false);
+
+        String browser;
+        if (browsers.getSelectedIndex() == 0) {
+            browser = "chrome";
+        } else {
+            browser = "gecko";
+        }
+
+        Runnable task = () -> {
+            Main.setDriver(browser, urlField.getText());
+            start.setText("Stop");
+            start.setEnabled(true);
+            Handler.start(ms);
+        };
+        new Thread(task).start();
+    }
+
+    private void stop(JButton start) {
+        start.setText("Start");
+        started = false;
+        browsers.setEnabled(true);
+        urlField.setEnabled(true);
+        delay.setEnabled(true);
+        round.setText("<none>");
+        count.setText("<none>");
+        Count.resetCount();
+        Handler.stop();
+        Main.getDriver().quit();
     }
 
     private void debug() {

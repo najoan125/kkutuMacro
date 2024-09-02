@@ -11,7 +11,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +38,7 @@ public class Handler {
             Design.count.setText(Count.getCount() + "");
             // getting player's id
             String id;
-            if (ID.isEmpty() && (id = getID()) != null) {
+            if (ID.isEmpty() && (id = WebUtil.getPlayerID()) != null) {
                 ID = id;
                 Main.LOG.info("kkutuId found: \"{}\"", ID);
             }
@@ -58,10 +57,9 @@ public class Handler {
             }
 
             // attack
-            List<WebElement> nowTurnPlayerID = getNowTurnPlayerID();
-            if (nowTurnPlayerID != null && !nowTurnPlayerID.isEmpty()) {
-                String playerName = nowTurnPlayerID.get(0).getText();
-                attack(playerName);
+            String nowTurnPlayerID = WebUtil.getNowTurnPlayerID();
+            if (nowTurnPlayerID != null) {
+                attack(nowTurnPlayerID);
             } else {
                 CountHandler.turnEnd();
             }
@@ -73,22 +71,6 @@ public class Handler {
         } catch (Exception e) {
             Main.LOG.error("Exception occurred: ", e);
         }
-    }
-
-    private static String getID() {
-        List<WebElement> playerId = Main.getDriver().findElements(By.className("my-stat-name"));
-        if (!playerId.isEmpty() && !playerId.get(0).getText().isEmpty()) {
-            return playerId.get(0).getText();
-        }
-        return null;
-    }
-
-    private static List<WebElement> getNowTurnPlayerID() {
-        List<WebElement> nowPlayer = Main.getDriver().findElements(By.className("game-user-current"));
-        if (nowPlayer.isEmpty()) {
-            return null;
-        }
-        return nowPlayer.get(0).findElements(By.className("game-user-name"));
     }
 
     private static void attack(String playerName) {

@@ -124,10 +124,10 @@ public class Design extends JFrame {
         panel.add(browsers);
 
         panel.add(new JLabel("  "));
-        panel.add(new JLabel("Delay(micro seconds): "));
+        panel.add(new JLabel("Delay(ms): "));
         delay = SwingUtil.getIntTextField();
         delay.setPreferredSize(new Dimension(80, 23));
-        delay.setValue(1000);
+        delay.setValue(10);
         panel.add(delay);
 
         panels.add(panel);

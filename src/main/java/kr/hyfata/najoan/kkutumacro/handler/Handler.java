@@ -22,7 +22,7 @@ public class Handler {
 
     public static void start(int delay) {
         executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(Handler::auto, 0, delay, TimeUnit.MILLISECONDS);
+        executorService.scheduleAtFixedRate(Handler::auto, 0, delay, TimeUnit.MICROSECONDS);
     }
 
     public static void stop() {

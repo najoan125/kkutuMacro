@@ -153,7 +153,7 @@ public class Design extends JFrame {
             if (!paused) {
                 paused = true;
                 pause.setText("Resume");
-                Handler.stop();
+                Handler.pause();
                 Main.LOG.info("The macro is paused");
             } else {
                 paused = false;

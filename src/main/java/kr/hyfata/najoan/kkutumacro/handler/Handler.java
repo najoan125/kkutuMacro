@@ -33,6 +33,10 @@ public class Handler {
         tempReady = false;
     }
 
+    public static void pause() {
+        executorService.shutdown();
+    }
+
     private static void auto() {
         try {
             Design.count.setText(Count.getCount() + "");

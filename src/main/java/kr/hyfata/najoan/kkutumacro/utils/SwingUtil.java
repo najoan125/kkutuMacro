@@ -48,7 +48,7 @@ public class SwingUtil {
         };
 
         formatter.setValueClass(Integer.class);
-        formatter.setMinimum(0L);
+        formatter.setMinimum(0);
         formatter.setMaximum(Integer.MAX_VALUE);
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true);

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Design extends JFrame {
-    public static final int WIDTH = 550, HEIGHT = 390;
+    public static final int WIDTH = 550, HEIGHT = 430;
     private final ArrayList<JPanel> panels = new ArrayList<>();
     private final HashMap<Integer, Integer> addedHeights = new HashMap<>(); //index, height
     private static JTextArea text;
@@ -54,7 +54,8 @@ public class Design extends JFrame {
         log();
         urlInput();
         browserAndDelay();
-        startButton();
+        controlButtons();
+        resetButton();
         debug();
         add(getPanel());
     }
@@ -132,7 +133,7 @@ public class Design extends JFrame {
         panels.add(panel);
     }
 
-    private void startButton() {
+    private void controlButtons() {
         JPanel panel = new JPanel();
         JButton start = new JButton("Start");
         JButton pause = new JButton("Pause");
@@ -165,6 +166,14 @@ public class Design extends JFrame {
         });
         panel.add(start);
         panel.add(pause);
+        panels.add(panel);
+    }
+
+    private void resetButton() {
+        JPanel panel = new JPanel();
+        JButton reset = new JButton("Reset");
+        reset.addActionListener(e -> Handler.reset());
+        panel.add(reset);
         panels.add(panel);
     }
 

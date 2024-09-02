@@ -27,14 +27,18 @@ public class Handler {
 
     public static void stop() {
         executorService.shutdown();
-        ID = "";
-        temp = "";
-        temp2 = "";
-        tempReady = false;
+        reset();
     }
 
     public static void pause() {
         executorService.shutdown();
+    }
+
+    public static void reset() {
+        ID = "";
+        temp = "";
+        temp2 = "";
+        tempReady = false;
     }
 
     private static void auto() {

@@ -33,14 +33,11 @@ public class WordUtil {
             if (excludedWords.contains(s)) {
                 continue;
             }
-            if (s.startsWith(start)) {
-                textList.add(s);
-            } else if (start2 != null && s.startsWith(start2)) {
+            if (s.startsWith(start) || (start2 != null && s.startsWith(start2))) {
                 textList.add(s);
             }
         }
-        Comparator<String> c = (s1, s2) -> Integer.compare(s2.length(), s1.length());
-        textList.sort(c);
+        textList.sort(Comparator.comparingInt(String::length).reversed());
         return textList;
     }
 

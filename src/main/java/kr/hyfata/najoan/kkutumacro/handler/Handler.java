@@ -86,11 +86,13 @@ public class Handler {
             CountHandler.turnStart();
             String start = WebUtil.getStartWord();
             String start2 = null;
-            String regex = "^.|.\\(.\\)$";
-            if (start != null && start.matches(regex)) {
+            boolean isRegexMatch = start != null && start.matches("^.|.\\(.\\)$");
+
+            if (isRegexMatch) {
                 if (start.contains("(")) {
-                    start2 = start.split("\\(")[1].replace(")", "");
-                    start = start.split("\\(")[0];
+                    String[] parts = start.split("\\(");
+                    start = parts[0];
+                    start2 = parts[1].replace(")", "");
                 }
                 tempReady = true;
                 temp = start;

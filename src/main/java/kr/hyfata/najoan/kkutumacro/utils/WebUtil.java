@@ -24,8 +24,9 @@ public class WebUtil {
         List<WebElement> nowPlayer = Main.getDriver().findElements(By.className("game-user-current"));
         if (!nowPlayer.isEmpty()) {
             List<WebElement> playerID = nowPlayer.get(0).findElements(By.className("game-user-name"));
-            if (!playerID.isEmpty() && !playerID.get(0).getText().isEmpty()) {
-                return playerID.get(0).getText();
+            String result;
+            if (!playerID.isEmpty() && !(result = playerID.get(0).getText()).isEmpty()) {
+                return result;
             }
         }
         return null;
@@ -54,8 +55,9 @@ public class WebUtil {
 
     private static String findTextByClassName(String className) {
         List<WebElement> webElement = Main.getDriver().findElements(By.className(className));
-        if (!webElement.isEmpty() && !webElement.get(0).getText().isEmpty()) {
-            return webElement.get(0).getText();
+        String result;
+        if (!webElement.isEmpty() && !(result = webElement.get(0).getText()).isEmpty()) {
+            return result;
         }
         return null;
     }

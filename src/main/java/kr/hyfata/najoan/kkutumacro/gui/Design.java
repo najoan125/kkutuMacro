@@ -25,7 +25,7 @@ public class Design extends JFrame {
 
     public static JLabel round = new JLabel("<none>"), count = new JLabel("<none>");
 
-    private static boolean started = false;
+    private static boolean started = false, paused = false;
 
     public Design() {
         setTitle("KKuTu Macro Tool");
@@ -135,22 +135,40 @@ public class Design extends JFrame {
     private void startButton() {
         JPanel panel = new JPanel();
         JButton start = new JButton("Start");
+        JButton pause = new JButton("Pause");
+        pause.setEnabled(false);
         start.addActionListener(e -> {
             if (delay.getValue().toString().equals("0")) {
                 return;
             }
             if (!started) {
                 started = true;
-                start(start);
+                start(start, pause);
             } else {
-                stop(start);
+                started = false;
+                stop(start ,pause);
+            }
+        });
+        pause.addActionListener(e -> {
+            if (!paused) {
+                paused = true;
+                pause.setText("Resume");
+                Handler.stop();
+                Main.LOG.info("The macro is paused");
+            } else {
+                paused = false;
+                pause.setText("Pause");
+                int ms = Integer.parseInt(delay.getValue().toString());
+                Handler.start(ms);
+                Main.LOG.info("The macro is Resumed");
             }
         });
         panel.add(start);
+        panel.add(pause);
         panels.add(panel);
     }
 
-    private void start(JButton start) {
+    private void start(JButton start, JButton pause) {
         int ms = Integer.parseInt(delay.getValue().toString());
         text.setText("");
         start.setText("Starting");
@@ -168,24 +186,35 @@ public class Design extends JFrame {
 
         Runnable task = () -> {
             Main.setDriver(browser, urlField.getText());
+            pause.setEnabled(true);
             start.setText("Stop");
             start.setEnabled(true);
             Handler.start(ms);
+            Main.LOG.info("The macro is started successfully");
         };
         new Thread(task).start();
     }
 
-    private void stop(JButton start) {
-        start.setText("Start");
-        started = false;
+    private void stop(JButton start, JButton pause) {
+        start.setText("Stopping");
+        start.setEnabled(false);
+        pause.setText("Pause");
+        pause.setEnabled(false);
+        Runnable task = () -> {
+            Handler.stop();
+            Main.getDriver().quit();
+            start.setText("Start");
+            start.setEnabled(true);
+        };
+        new Thread(task).start();
         browsers.setEnabled(true);
         urlField.setEnabled(true);
         delay.setEnabled(true);
         round.setText("<none>");
         count.setText("<none>");
         Count.resetCount();
-        Handler.stop();
-        Main.getDriver().quit();
+        paused = false;
+        Main.LOG.info("The macro is stopped successfully");
     }
 
     private void debug() {

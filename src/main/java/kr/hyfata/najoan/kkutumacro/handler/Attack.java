@@ -19,6 +19,7 @@ public class Attack {
     public static void attack() {
         init();
         if (tempWords == null) {
+            tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             return;
         }
         if (tempWords.size() > tempIndex + 1) {

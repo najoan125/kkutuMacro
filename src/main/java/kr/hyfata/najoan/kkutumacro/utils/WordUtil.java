@@ -8,15 +8,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
 
 public class WordUtil {
     private static final HashSet<String> excludedWords = new HashSet<>();
 
-    public static HashSet<String> getCSVData() throws IOException {
-        HashSet<String> result = new HashSet<>();
+    public static ArrayList<String> getCSVData() throws IOException {
+        ArrayList<String> result = new ArrayList<>();
         InputStream inputStream = WebUtil.class.getClassLoader().getResourceAsStream("kr.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream), StandardCharsets.UTF_8));
 
@@ -27,18 +26,32 @@ public class WordUtil {
         return result;
     }
 
-    public static ArrayList<String> getWords(String start, String start2) {
-        ArrayList<String> textList = new ArrayList<>();
+    static ArrayList<String> textList = new ArrayList<>();
+    static ArrayList<String> missionedList = new ArrayList<>();
+    static ArrayList<String> result = new ArrayList<>();
+    public static ArrayList<String> getWords(String start, String start2, String mission) {
+        textList.clear();
+        missionedList.clear();
+        result.clear();
+
         for (String s : Main.getWords()) {
             if (excludedWords.contains(s)) {
                 continue;
             }
             if (s.startsWith(start) || (start2 != null && s.startsWith(start2))) {
-                textList.add(s);
+                if (mission != null && s.contains(mission)) {
+                    missionedList.add(s);
+                } else {
+                    textList.add(s);
+                }
             }
         }
-        textList.sort(Comparator.comparingInt(String::length).reversed());
-        return textList;
+
+        if (!missionedList.isEmpty()) {
+            result.addAll(missionedList);
+        }
+        result.addAll(textList);
+        return result;
     }
 
     public static void addExcludedWord(String word) {

@@ -47,11 +47,11 @@ public class Attack {
         }
 
         if (tempCount != Count.getCount()) {
-            tempWords = WordUtil.getWords(start, start2);
+            tempWords = WordUtil.getWords(start, start2, WebUtil.getMissionWord());
             tempIndex = -1;
             tempCount = Count.getCount();
         } else if (Count.getCount() == 0) {
-            tempWords = WordUtil.getWords(start, start2);
+            tempWords = WordUtil.getWords(start, start2, WebUtil.getMissionWord());
             Count.addCount();
             tempCount = Count.getCount();
             tempIndex = -1;

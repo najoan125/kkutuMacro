@@ -20,6 +20,10 @@ public class WebUtil {
         return findTextByClassName("my-stat-name");
     }
 
+    public static String getMissionWord() {
+        return findTextByClassName("items");
+    }
+
     public static String getNowTurnPlayerID() {
         List<WebElement> nowPlayer = Main.getDriver().findElements(By.className("game-user-current"));
         if (!nowPlayer.isEmpty()) {

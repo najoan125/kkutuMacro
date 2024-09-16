@@ -13,7 +13,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation("org.seleniumhq.selenium:selenium-java:4.23.1")
+    implementation("org.seleniumhq.selenium:selenium-java:4.24.0")
     implementation("com.formdev:flatlaf:3.5.1")
     // https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
     implementation("ch.qos.logback:logback-classic:1.2.13")

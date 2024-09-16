@@ -29,29 +29,51 @@ public class WordUtil {
     static ArrayList<String> textList = new ArrayList<>();
     static ArrayList<String> missionedList = new ArrayList<>();
     static ArrayList<String> result = new ArrayList<>();
-    public static ArrayList<String> getWords(String start, String start2, String mission) {
-        textList.clear();
-        missionedList.clear();
-        result.clear();
+    static String temp = "";
+    static boolean success = false;
 
-        for (String s : Main.getWords()) {
-            if (excludedWords.contains(s)) {
-                continue;
-            }
-            if (s.startsWith(start) || (start2 != null && s.startsWith(start2))) {
-                if (mission != null && s.contains(mission)) {
-                    missionedList.add(s);
-                } else {
+    public static void preLoadWords(String start, String start2) {
+        if (!temp.equals(start)) {
+            temp = start;
+            textList = new ArrayList<>();
+
+            for (String s : Main.getWords()) {
+                if (excludedWords.contains(s)) {
+                    continue;
+                }
+                if (s.startsWith(start) || (start2 != null && s.startsWith(start2))) {
                     textList.add(s);
+                }
+            }
+        }
+        success = true;
+    }
+
+    public static ArrayList<String> getWords(String mission) {
+        if (textList.isEmpty()) {
+            return null;
+        } else if (!success) {
+            return null;
+        }
+        success = false;
+
+        missionedList = new ArrayList<>();
+        result = new ArrayList<>();
+
+        if (mission != null) {
+            for (String s : textList) {
+                if (s.contains(mission)) {
+                    missionedList.add(s);
                 }
             }
         }
 
         if (!missionedList.isEmpty()) {
             result.addAll(missionedList);
+            result.addAll(textList);
+            return result;
         }
-        result.addAll(textList);
-        return result;
+        return textList;
     }
 
     public static void addExcludedWord(String word) {

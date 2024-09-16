@@ -4,6 +4,7 @@ import kr.hyfata.najoan.kkutumacro.Main;
 import kr.hyfata.najoan.kkutumacro.gui.Design;
 import kr.hyfata.najoan.kkutumacro.handler.dto.Count;
 import kr.hyfata.najoan.kkutumacro.handler.dto.Round;
+import kr.hyfata.najoan.kkutumacro.utils.DueumUtil;
 import kr.hyfata.najoan.kkutumacro.utils.WebUtil;
 import kr.hyfata.najoan.kkutumacro.utils.WordUtil;
 import org.openqa.selenium.*;
@@ -17,8 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Handler {
     private static ScheduledExecutorService executorService;
-    private static String ID = "", temp = "", temp2 = "";
-    private static boolean tempReady = false;
+    private static String ID = "";
 
     public static void start(int delay) {
         executorService = Executors.newSingleThreadScheduledExecutor();
@@ -36,9 +36,6 @@ public class Handler {
 
     public static void reset() {
         ID = "";
-        temp = "";
-        temp2 = "";
-        tempReady = false;
     }
 
     private static void auto() {
@@ -58,10 +55,12 @@ public class Handler {
                 Design.round.setText(round);
             }
 
-            // get history
+            // get history, preLoad words
             String history;
             if ((history = WebUtil.getLatestHistory()) != null) {
                 WordUtil.addExcludedWord(history);
+                String word = String.valueOf(history.charAt(history.length() - 1));
+                WordUtil.preLoadWords(word, DueumUtil.getSubChar("KSH", word));
             }
 
             // attack
@@ -84,25 +83,8 @@ public class Handler {
     private static void attack(String playerName) {
         if (!playerName.isEmpty() && playerName.equals(ID)) {
             CountHandler.turnStart();
-            String start = WebUtil.getStartWord();
-            String start2 = null;
-            boolean isRegexMatch = start != null && start.matches("^.|.\\(.\\)$");
-
-            if (isRegexMatch) {
-                if (start.contains("(")) {
-                    String[] parts = start.split("\\(");
-                    start = parts[0];
-                    start2 = parts[1].replace(")", "");
-                }
-                tempReady = true;
-                temp = start;
-                temp2 = start2;
-                Attack.attack(temp, temp2);
-            } else if (tempReady) {
-                Attack.attack(temp, temp2);
-            }
+            Attack.attack();
         } else {
-            tempReady = false;
             CountHandler.turnEnd();
         }
     }

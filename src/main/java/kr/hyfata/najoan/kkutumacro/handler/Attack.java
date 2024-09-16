@@ -14,47 +14,68 @@ public class Attack {
     private static String tempRound = "";
     private static ArrayList<String> tempWords;
 
-    private static String passedWord = "";
+    private static boolean passed = false;
 
-    public static void attack(String start, String start2) {
-        init(start, start2);
+    public static void attack() {
+        init();
+        if (tempWords == null) {
+            return;
+        }
         if (tempWords.size() > tempIndex + 1) {
             tempIndex++;
         }
 
         if (!tempWords.isEmpty()) {
-            passedWord = "";
+            passed = false;
             WebUtil.send(tempWords.get(tempIndex));
         } else {
-            if (!passedWord.equals(start)) {
+            if (passed) {
                 Main.LOG.warn("The word has not found in dictionary");
                 WebUtil.send("ㅠㅠ");
             }
-            passedWord = start;
+            passed = true;
         }
     }
 
     private static void reset() {
         WordUtil.resetExcludedWords();
         Count.resetCount();
-        passedWord = "";
+        passed = false;
     }
 
-    private static void init(String start, String start2) {
+    private static void init() {
         if (!tempRound.equals(Round.getCurrentRound())) {
             tempRound = Round.getCurrentRound();
             reset();
         }
 
         if (tempCount != Count.getCount()) {
-            tempWords = WordUtil.getWords(start, start2, WebUtil.getMissionWord());
+            tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             tempIndex = -1;
             tempCount = Count.getCount();
+            passed = false;
         } else if (Count.getCount() == 0) {
-            tempWords = WordUtil.getWords(start, start2, WebUtil.getMissionWord());
+            preLoad();
+            tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             Count.addCount();
             tempCount = Count.getCount();
             tempIndex = -1;
+            passed = false;
+        }
+    }
+
+    private static void preLoad() {
+        String start = WebUtil.getStartWord();
+        String start2 = null;
+        boolean isRegexMatch = start != null && start.matches("^.|.\\(.\\)$");
+
+        if (isRegexMatch) {
+            if (start.contains("(")) {
+                String[] parts = start.split("\\(");
+                start = parts[0];
+                start2 = parts[1].replace(")", "");
+            }
+            WordUtil.preLoadWords(start, start2);
         }
     }
 }

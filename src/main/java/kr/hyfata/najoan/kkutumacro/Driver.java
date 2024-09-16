@@ -8,6 +8,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.net.URL;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 public class Driver {
     private static WebDriver driver;
@@ -30,6 +31,7 @@ public class Driver {
             Driver.driver = new ChromeDriver();
         }
         Driver.driver.get(url);
+        Driver.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
     }
 
     public WebDriver getDriver() {

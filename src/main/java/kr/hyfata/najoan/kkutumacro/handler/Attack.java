@@ -12,27 +12,26 @@ public class Attack {
     private static int tempCount;
     private static int tempIndex = -1;
     private static String tempRound = "";
-    private static ArrayList<String> tempWords;
 
     private static boolean passed = false;
 
     public static void attack() {
         init();
+        ArrayList<String> words = WordUtil.getWords(WebUtil.getMissionWord());
         // if failed, init tempWords list
-        if (tempWords == null) {
-            tempWords = WordUtil.getWords(WebUtil.getMissionWord());
+        if (words == null) {
             return;
         }
 
         // add index of tempWords list
-        if (tempWords.size() > tempIndex + 1) {
+        if (words.size() > tempIndex + 1) {
             tempIndex++;
         }
 
         // send word OR not found message
-        if (!tempWords.isEmpty()) {
+        if (!words.isEmpty()) {
             passed = false;
-            WebUtil.send(tempWords.get(tempIndex));
+            WebUtil.send(words.get(tempIndex));
         } else {
             if (passed) {
                 Main.LOG.warn("The word has not found in dictionary");
@@ -55,13 +54,11 @@ public class Attack {
         }
 
         if (tempCount != Count.getCount()) {
-            tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             tempIndex = -1;
             tempCount = Count.getCount();
             passed = false;
         } else if (Count.getCount() == 0) { // first turn
             preLoad(); // preLoad words(history is not perfect)
-            tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             Count.addCount();
             tempCount = Count.getCount();
             tempIndex = -1;

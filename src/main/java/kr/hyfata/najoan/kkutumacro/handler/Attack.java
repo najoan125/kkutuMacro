@@ -18,14 +18,18 @@ public class Attack {
 
     public static void attack() {
         init();
+        // if failed, init tempWords list
         if (tempWords == null) {
             tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             return;
         }
+
+        // add index of tempWords list
         if (tempWords.size() > tempIndex + 1) {
             tempIndex++;
         }
 
+        // send word OR not found message
         if (!tempWords.isEmpty()) {
             passed = false;
             WebUtil.send(tempWords.get(tempIndex));
@@ -55,8 +59,8 @@ public class Attack {
             tempIndex = -1;
             tempCount = Count.getCount();
             passed = false;
-        } else if (Count.getCount() == 0) {
-            preLoad();
+        } else if (Count.getCount() == 0) { // first turn
+            preLoad(); // preLoad words(history is not perfect)
             tempWords = WordUtil.getWords(WebUtil.getMissionWord());
             Count.addCount();
             tempCount = Count.getCount();

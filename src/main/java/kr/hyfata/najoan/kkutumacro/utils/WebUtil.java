@@ -63,7 +63,6 @@ public class WebUtil {
 
     private static String findTextByClassName(String className) {
         List<WebElement> webElements = Main.getDriver().findElements(By.className(className));
-
         if (webElements.isEmpty()) {
             return null;
         }

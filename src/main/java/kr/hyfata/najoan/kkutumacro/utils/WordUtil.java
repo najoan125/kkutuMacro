@@ -26,10 +26,14 @@ public class WordUtil {
         return result;
     }
 
-    static ArrayList<String> textList = new ArrayList<>();
-    static ArrayList<String> missionedList = new ArrayList<>();
-    static ArrayList<String> result = new ArrayList<>();
+    static ArrayList<String> textList = new ArrayList<>(); // All words that match the condition
+    static ArrayList<String> missionedList = new ArrayList<>(); // only contains mission word(included at textList)
+    static ArrayList<String> result = new ArrayList<>(); // textList + missionedList
+
+    // using at preLoadWords
     static String temp = "";
+
+    // Is preLoadWords successful?
     static boolean success = false;
 
     public static void preLoadWords(String start, String start2) {

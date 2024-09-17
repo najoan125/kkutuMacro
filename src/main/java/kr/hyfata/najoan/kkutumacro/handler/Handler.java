@@ -40,19 +40,10 @@ public class Handler {
 
     private static void auto() {
         try {
-            Design.count.setText(Count.getCount() + "");
-            // getting player's id
-            String id;
-            if (ID.isEmpty() && (id = WebUtil.getPlayerID()) != null) {
-                ID = id;
-                Main.LOG.info("kkutuId found: \"{}\"", ID);
-            }
-
             // get current round
             String round;
             if ((round = WebUtil.getCurrentRound()) != null) {
                 Round.setCurrentRound(round);
-                Design.round.setText(round);
             }
 
             // get history, preLoad words
@@ -65,10 +56,22 @@ public class Handler {
 
             // attack
             String nowTurnPlayerID = WebUtil.getNowTurnPlayerID();
-            if (nowTurnPlayerID != null) {
-                attack(nowTurnPlayerID);
+            if (nowTurnPlayerID != null && !nowTurnPlayerID.isEmpty() && nowTurnPlayerID.equals(ID)) {
+                CountHandler.turnStart();
+                Attack.attack();
             } else {
                 CountHandler.turnEnd();
+            }
+
+            // GUI update
+            Design.round.setText(round);
+            Design.count.setText(Count.getCount() + "");
+
+            // getting player's id
+            String id;
+            if (ID.isEmpty() && (id = WebUtil.getPlayerID()) != null) {
+                ID = id;
+                Main.LOG.info("kkutuId found: \"{}\"", ID);
             }
         } catch (UnhandledAlertException ex) {
             Main.LOG.warn("Alert opened! it will pause macro for 5 seconds!");
@@ -77,15 +80,6 @@ public class Handler {
             Main.LOG.error("DOM was changed! This is not bug!");
         } catch (Exception e) {
             Main.LOG.error("Exception occurred: ", e);
-        }
-    }
-
-    private static void attack(String playerName) {
-        if (!playerName.isEmpty() && playerName.equals(ID)) {
-            CountHandler.turnStart();
-            Attack.attack();
-        } else {
-            CountHandler.turnEnd();
         }
     }
 

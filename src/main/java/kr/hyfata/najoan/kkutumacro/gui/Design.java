@@ -4,6 +4,7 @@ import kr.hyfata.najoan.kkutumacro.Main;
 import kr.hyfata.najoan.kkutumacro.handler.Handler;
 import kr.hyfata.najoan.kkutumacro.handler.dto.Count;
 import kr.hyfata.najoan.kkutumacro.utils.SwingUtil;
+import kr.hyfata.najoan.kkutumacro.utils.WebUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,13 +15,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Design extends JFrame {
-    public static final int WIDTH = 550, HEIGHT = 430;
+    public static final int WIDTH = 550, HEIGHT = 480;
     private final ArrayList<JPanel> panels = new ArrayList<>();
     private final HashMap<Integer, Integer> addedHeights = new HashMap<>(); //index, height
     private static JTextArea text;
 
     private static JComboBox<String> browsers;
-    private static JTextField urlField;
+    private static JTextField urlField, chatField;
     private static JFormattedTextField delay;
 
     public static JLabel round = new JLabel("<none>"), count = new JLabel("<none>");
@@ -57,6 +58,8 @@ public class Design extends JFrame {
         controlButtons();
         resetButton();
         debug();
+        chat();
+
         add(getPanel());
     }
 
@@ -185,6 +188,7 @@ public class Design extends JFrame {
         browsers.setEnabled(false);
         urlField.setEnabled(false);
         delay.setEnabled(false);
+        chatField.setEnabled(true);
 
         String browser;
         if (browsers.getSelectedIndex() == 0) {
@@ -219,6 +223,7 @@ public class Design extends JFrame {
         browsers.setEnabled(true);
         urlField.setEnabled(true);
         delay.setEnabled(true);
+        chatField.setEnabled(false);
         round.setText("<none>");
         count.setText("<none>");
         Count.resetCount();
@@ -232,6 +237,20 @@ public class Design extends JFrame {
         panel.add(round);
         panel.add(new JLabel("   Count: "));
         panel.add(count);
+        panels.add(panel);
+    }
+
+    private void chat() {
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Chat: "));
+        chatField = new JTextField();
+        chatField.setPreferredSize(new Dimension(300, 23));
+        chatField.addActionListener(e -> {
+            WebUtil.send(chatField.getText());
+            chatField.setText("");
+        });
+        chatField.setEnabled(false);
+        panel.add(chatField);
         panels.add(panel);
     }
 

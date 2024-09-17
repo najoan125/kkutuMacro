@@ -71,12 +71,14 @@ public class WebUtil {
         return result.isEmpty() ? null : result;
     }
 
-    public static void send(String message) {
+    public static synchronized void send(String message) {
         WebDriver driver = Main.getDriver();
 
-        driver.findElement(By.cssSelector("#Talk")).sendKeys(message);
-        WebElement chatButton = driver.findElement(By.cssSelector("#ChatBtn"));
-        JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].click();", chatButton);
+        try {
+            driver.findElement(By.cssSelector("#Talk")).sendKeys(message);
+            WebElement chatButton = driver.findElement(By.cssSelector("#ChatBtn"));
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+            js.executeScript("arguments[0].click();", chatButton);
+        } catch (Exception ignored) {}
     }
 }
